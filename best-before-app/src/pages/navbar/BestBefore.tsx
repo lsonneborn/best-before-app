@@ -12,8 +12,7 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
   const [listData, setListData] = useState(jsonData);
   const [showForm, setShowForm] = useState(false);
   const [searchField, setSearchField] = useState("");
-  const [filterInStock, setFilterInStock] = useState("");
-  const [filteredItems, setFilteredItems] = useState(jsonData);
+  const [filteredItems, setFilteredItems] = useState(listData);
 
   const today = new Date();
 
@@ -30,17 +29,18 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
       },
     ];
     setListData(copy);
+    setFilteredItems(copy);
     setShowForm(false);
   };
 
   const formatDate = (date: Date | string | null): string => {
     if (!date) {
-      return "-"; // Handle the case when date is null or undefined
+      return "-";
     }
 
     const dateObj = typeof date === "string" ? new Date(date) : date;
     if (isNaN(dateObj.getTime())) {
-      return "-"; // Handle the case when date is an invalid Date object or an invalid date string
+      return "-";
     }
 
     return new Intl.DateTimeFormat(undefined, {
@@ -54,52 +54,29 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
     const keyword = e.target.value;
 
     if (keyword !== "") {
-      const results = jsonData.filter((items) => {
+      const results = listData.filter((items) => {
         return items.item.toLowerCase().startsWith(keyword.toLowerCase());
       });
       setFilteredItems(results);
     } else {
-      setFilteredItems(jsonData);
+      setFilteredItems(listData);
     }
     setSearchField(keyword);
   };
-
-  // const filterByStock = (e) => {
-  //   const keyword = e.target.value;
-
-  //   if (keyword === "yes") {
-  //     const results = filteredItems.filter
-  //   }
-  // };
 
   return (
     <>
       <div className="list-container">
         <table>
           <tr>
-            {/* <td>
+            <td>
               <input
                 type="search"
                 value={searchField}
                 onChange={filterByName}
                 placeholder="Search item"
               />
-            </td> */}
-            {/* <td>
-              <label>
-                At home?
-                <select
-                  name="inStock"
-                  value={filterInStock}
-                  onChange={filterByStock}
-                  placeholder="At home?"
-                >
-                  <option value=""></option>
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                </select>
-              </label>
-            </td> */}
+            </td>
             <td>
               <button
                 className="btn btn-primary addButton"
@@ -125,9 +102,8 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
             </tr>
           </thead>
           <tbody>
-            {
-              // filteredItems && filteredItems.length > 0 ? (
-              listData.map((data, key) => {
+            {filteredItems && filteredItems.length > 0 ? (
+              filteredItems.map((data, key) => {
                 return (
                   <tr
                     key={data["id"]}
@@ -151,10 +127,9 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
                   </tr>
                 );
               })
-              // ) : (
-              //   <div>No results</div>
-              // )
-            }
+            ) : (
+              <div>No results</div>
+            )}
           </tbody>
         </table>
       </div>
