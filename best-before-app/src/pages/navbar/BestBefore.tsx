@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-import BestBeforeForm from "../../components/BestBeforeForm";
+import BestBeforeAddItemForm from "../../components/BestBeforeAddItemForm";
+import BestBeforeEditItemForm from "../../components/BestBeforeEditItemForm";
 import PopupModal from "../../components/PopupModal";
 
 interface BestBeforeProps {
@@ -10,16 +11,24 @@ interface BestBeforeProps {
 
 const BestBefore = ({ jsonData }: BestBeforeProps) => {
   const [listData, setListData] = useState(jsonData);
-  const [showForm, setShowForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [initialDataForEdit, setInitialDataForEdit] = useState({
+    id: 0,
+    item: "",
+    bestBeforeDate: new Date(),
+    inStock: false,
+    category: "food",
+  });
   const [searchField, setSearchField] = useState("");
   const [filteredItems, setFilteredItems] = useState(listData);
 
   const today = new Date();
 
   const addItem = (newItem: Item) => {
-    let copy = [...listData];
-    copy = [
-      ...copy,
+    let updatedList = [...listData];
+    updatedList = [
+      ...updatedList,
       {
         id: listData.length + 1,
         item: newItem.item,
@@ -28,9 +37,49 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
         category: newItem.category,
       },
     ];
-    setListData(copy);
-    setFilteredItems(copy);
-    setShowForm(false);
+    setListData(updatedList);
+    setFilteredItems(updatedList);
+    setShowAddForm(false);
+  };
+
+  const editItem = (id: number, editedItem: Item) => {
+    const itemIndex = listData.findIndex((item) => item.id === id);
+
+    if (itemIndex !== -1) {
+      const updatedList = [...listData];
+
+      updatedList[itemIndex] = {
+        ...updatedList[itemIndex],
+        item: editedItem.item,
+        inStock: editedItem.inStock,
+        bestBeforeDate: editedItem.bestBeforeDate,
+        category: editedItem.category,
+      };
+
+      setListData(updatedList);
+      setFilteredItems(updatedList);
+
+      const keyword = searchField.toLowerCase();
+      if (keyword !== "") {
+        const filteredResults = updatedList.filter((item) => {
+          return item.item.toLowerCase().startsWith(keyword);
+        });
+        setFilteredItems(filteredResults);
+      }
+      setShowEditForm(false);
+      setInitialDataForEdit({
+        id: 0,
+        item: "",
+        bestBeforeDate: new Date(),
+        inStock: false,
+        category: "food",
+      });
+    }
+  };
+
+  const handleRowClick = (data: Item) => {
+    setShowEditForm(true);
+    setInitialDataForEdit(data);
   };
 
   const formatDate = (date: Date | string | null): string => {
@@ -80,7 +129,7 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
             <td>
               <button
                 className="btn btn-primary addButton"
-                onClick={() => setShowForm(true)}
+                onClick={() => setShowAddForm(true)}
               >
                 Add item
               </button>
@@ -88,8 +137,18 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
           </tr>
         </table>
 
-        <PopupModal isOpen={showForm} onClose={() => setShowForm(false)}>
-          <BestBeforeForm addItem={addItem} />
+        <PopupModal isOpen={showAddForm} onClose={() => setShowAddForm(false)}>
+          <BestBeforeAddItemForm addItem={addItem} />
+        </PopupModal>
+
+        <PopupModal
+          isOpen={showEditForm}
+          onClose={() => setShowEditForm(false)}
+        >
+          <BestBeforeEditItemForm
+            initialData={initialDataForEdit}
+            editItem={editItem}
+          />
         </PopupModal>
 
         <table className="table table-hover">
@@ -114,6 +173,7 @@ const BestBefore = ({ jsonData }: BestBeforeProps) => {
                           : "table-warning"
                         : "table-danger"
                     }
+                    onClick={() => handleRowClick(data)}
                   >
                     <td>{data["item"]}</td>
                     <td>

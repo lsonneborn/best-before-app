@@ -7,10 +7,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import jsonData from "./data/testdata.json";
 
 //TODO
-// - Save new Items to JSON
 // - make best before date optional
-// - filter by category/at home
-// - edit item
+// - filter by multiple criteria
+// - backend
 
 import {
   BrowserRouter as Router,
