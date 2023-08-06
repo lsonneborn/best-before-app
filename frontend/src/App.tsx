@@ -13,9 +13,9 @@ import {
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
-import BestBefore from "./pages/navbar/BestBefore";
-import Settings from "./pages/navbar/Settings";
-import ShoppingList from "./pages/navbar/ShoppingList";
+import BestBefore from "./pages/BestBefore";
+import Settings from "./pages/Settings";
+import ShoppingList from "./pages/ShoppingList";
 
 const App = () => {
   const [listData, setlistData] = useState(testList);

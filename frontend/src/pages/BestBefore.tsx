@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-import BestBeforeAddItemForm from "../../components/BestBeforeAddItemForm";
-import BestBeforeEditItemForm from "../../components/BestBeforeEditItemForm";
-import PopupModal from "../../components/PopupModal";
+import BestBeforeAddItemForm from "../components/BestBeforeAddItemForm";
+import BestBeforeEditItemForm from "../components/BestBeforeEditItemForm";
+import PopupModal from "../components/PopupModal";
 
 interface BestBeforeProps {
   initialData: any[];
