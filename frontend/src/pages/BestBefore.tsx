@@ -4,6 +4,9 @@ import { useState } from "react";
 import BestBeforeAddItemForm from "../components/BestBeforeAddItemForm";
 import BestBeforeEditItemForm from "../components/BestBeforeEditItemForm";
 import PopupModal from "../components/PopupModal";
+import NameFilter from "../components/NameFilter";
+import InStockFilter from "../components/InStockFilter";
+import CategoryFilter from "../components/CategoryFilter";
 
 interface BestBeforeProps {
   initialData: any[];
@@ -164,24 +167,17 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
     }).format(dateObj);
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const keyword = e.target.value.toLowerCase();
+  const handleNameChange = (keyword: string) => {
     setSearchField(keyword);
     applyFilters(keyword, inStockFilter, categoryFilter);
   };
 
-  const handleInStockChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const inStock = e.target.value;
-    setinStockFilter(inStock === "" ? null : inStock === "yes");
-    applyFilters(
-      nameFilter,
-      inStock === "" ? null : inStock === "yes",
-      categoryFilter
-    );
+  const handleInStockChange = (inStock: boolean | null) => {
+    setinStockFilter(inStock);
+    applyFilters(nameFilter, inStock, categoryFilter);
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = e.target.value;
+  const handleCategoryChange = (category: string) => {
     setCategoryFilter(category);
     applyFilters(nameFilter, inStockFilter, category);
   };
@@ -226,31 +222,17 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
           <tbody>
             <tr>
               <td>
-                <input
-                  type="search"
-                  value={searchField}
-                  onChange={handleNameChange}
-                  placeholder="Search item"
-                />
+                <NameFilter input={searchField} onChange={handleNameChange} />
                 <label>At home?</label>
-                <select className="dropdowns" onChange={handleInStockChange}>
-                  <option value=""></option>
-                  <option value="yes">yes</option>
-                  <option value="no">no</option>
-                </select>
+                <InStockFilter
+                  value={inStockFilter}
+                  onChange={handleInStockChange}
+                />
                 <label>Category</label>
-                <select
-                  className="dropdowns"
+                <CategoryFilter
+                  value={categoryFilter}
                   onChange={handleCategoryChange}
-                  placeholder="category"
-                >
-                  <option value=""></option>
-                  <option value="food">food</option>
-                  <option value="cosmetics">cosmetics</option>
-                  <option value="houseware">housewares</option>
-                  <option value="pharmaceuticals">pharmaceuticals</option>
-                  <option value="other">other</option>
-                </select>
+                />
               </td>
               <td>
                 <button
