@@ -2,9 +2,9 @@ import React, { FormEvent, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 
 interface BestBeforeEditItemFormProps {
-  initialData: any;
-  editItem: (editedItem: any) => void;
-  deleteItem: (deletedItem: any) => void;
+  initialData: Item;
+  editItem: (editedItem: Item) => void;
+  deleteItem: (deletedItem: Item) => void;
 }
 
 const BestBeforeEditItemForm = ({

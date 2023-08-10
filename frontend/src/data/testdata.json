@@ -1,20 +1,20 @@
 [{
     "_id": 1,
-    "name": "These are test data",
+    "name": "Milk",
     "inStock": true,
     "bestBeforeDate": "2023-07-24",
     "storeDays": 3,
     "category": "food"
   }, {
     "_id": 2,
-    "name": "something went wrong",
+    "name": "Bread",
     "inStock": true,
     "bestBeforeDate": "2023-08-05",
     "storeDays": 3,
     "category": "food"
   }, {
     "_id": 3,
-    "name": "you should not be able to see these",
+    "name": "Shampoo",
     "inStock": false,
     "bestBeforeDate": "2024-01-21",
     "storeDays": 3,

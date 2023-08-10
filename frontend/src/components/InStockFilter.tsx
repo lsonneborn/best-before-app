@@ -1,17 +1,17 @@
 import React from "react";
 
 interface InStockFilterProps {
-  value: boolean | null;
-  onChange: (inStock: boolean | null) => void;
+  value: boolean | undefined;
+  onChange: (inStock: boolean | undefined) => void;
 }
 
 const InStockFilter = ({ value, onChange }: InStockFilterProps) => {
   return (
     <select
       className="dropdowns"
-      value={value === null ? "" : value ? "yes" : "no"}
+      value={value === undefined ? "" : value ? "yes" : "no"}
       onChange={(e) =>
-        onChange(e.target.value === "" ? null : e.target.value === "yes")
+        onChange(e.target.value === "" ? undefined : e.target.value === "yes")
       }
     >
       <option value=""></option>

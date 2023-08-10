@@ -1,13 +1,14 @@
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 
 interface BestBeforeAddItemFormProps {
-  addItem: (newItem: any) => void;
+  addItem: (newItem: Item) => void;
 }
 
 const BestBeforeAddItemForm = ({ addItem }: BestBeforeAddItemFormProps) => {
   const [userInput, setUserInput] = useState({
+    _id: 0,
     name: "",
     bestBeforeDate: new Date(),
     storeDays: 0,
@@ -37,6 +38,7 @@ const BestBeforeAddItemForm = ({ addItem }: BestBeforeAddItemFormProps) => {
     e.preventDefault();
     addItem(userInput);
     setUserInput({
+      _id: 0,
       name: "",
       bestBeforeDate: new Date(),
       storeDays: 0,

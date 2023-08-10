@@ -9,7 +9,7 @@ import InStockFilter from "../components/InStockFilter";
 import CategoryFilter from "../components/CategoryFilter";
 
 interface BestBeforeProps {
-  initialData: any[];
+  initialData: Item[];
 }
 
 const BestBefore = ({ initialData }: BestBeforeProps) => {
@@ -17,17 +17,18 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [initialDataForEdit, setInitialDataForEdit] = useState({
-    id: 0,
+    _id: 0,
     name: "",
     bestBeforeDate: new Date(),
     inStock: false,
     storeDays: 0,
     category: "food",
   });
-  const [searchField, setSearchField] = useState("");
   const [filteredItems, setFilteredItems] = useState(initialData);
   const [nameFilter, setNameFilter] = useState("");
-  const [inStockFilter, setinStockFilter] = useState<boolean | null>(null);
+  const [inStockFilter, setinStockFilter] = useState<boolean | undefined>(
+    undefined
+  );
   const [categoryFilter, setCategoryFilter] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,7 +45,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
       const data = await response.json();
       setIsLoading(false);
       console.log("Successfully fetched Data:");
-      const listDataWithDates = data.map((item: any) => ({
+      const listDataWithDates = data.map((item: Item) => ({
         ...item,
         bestBeforeDate: new Date(item.bestBeforeDate),
       }));
@@ -56,7 +57,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
     }
   };
 
-  const addItem = async (newItem: any) => {
+  const addItem = async (newItem: Item) => {
     try {
       const jsonData = {
         name: newItem.name,
@@ -88,7 +89,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
     }
   };
 
-  const editItem = async (editedItem: any) => {
+  const editItem = async (editedItem: Item) => {
     try {
       const jsonData = {
         name: editedItem.name,
@@ -123,7 +124,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
     }
   };
 
-  const deleteItem = async (deletedItem: any) => {
+  const deleteItem = async (deletedItem: Item) => {
     try {
       const response = await fetch(apiEndpoint + "/" + deletedItem._id, {
         method: "DELETE",
@@ -132,7 +133,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
       });
       if (response.ok) {
         let updatedList = listData.filter(
-          (item: any) => item._id !== deletedItem._id
+          (item: Item) => item._id !== deletedItem._id
         );
         setListData([...updatedList]);
         setFilteredItems([...updatedList]);
@@ -168,11 +169,11 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
   };
 
   const handleNameChange = (keyword: string) => {
-    setSearchField(keyword);
+    setNameFilter(keyword);
     applyFilters(keyword, inStockFilter, categoryFilter);
   };
 
-  const handleInStockChange = (inStock: boolean | null) => {
+  const handleInStockChange = (inStock: boolean | undefined) => {
     setinStockFilter(inStock);
     applyFilters(nameFilter, inStock, categoryFilter);
   };
@@ -184,7 +185,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
 
   const applyFilters = (
     nameFilter: string,
-    inStockFilter: boolean | null,
+    inStockFilter: boolean | undefined,
     categoryFilter: string
   ) => {
     const nameKeyword = nameFilter.toLowerCase();
@@ -192,7 +193,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
       return item.name.toLowerCase().includes(nameKeyword);
     });
 
-    if (inStockFilter !== null && categoryFilter !== "") {
+    if (inStockFilter !== undefined && categoryFilter !== "") {
       const filteredByNameAndInStock = filteredByName.filter((item) => {
         return item.inStock === inStockFilter;
       });
@@ -200,12 +201,12 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
         return item.category.includes(categoryFilter);
       });
       setFilteredItems(filteredByAll);
-    } else if (inStockFilter !== null && categoryFilter === "") {
+    } else if (inStockFilter !== undefined && categoryFilter === "") {
       const filteredByNameAndInStock = filteredByName.filter((item) => {
         return item.inStock === inStockFilter;
       });
       setFilteredItems(filteredByNameAndInStock);
-    } else if (inStockFilter === null && categoryFilter !== "") {
+    } else if (inStockFilter === undefined && categoryFilter !== "") {
       const filteredByCategory = filteredByName.filter((item) => {
         return item.category.includes(categoryFilter);
       });
@@ -222,7 +223,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
           <tbody>
             <tr>
               <td>
-                <NameFilter input={searchField} onChange={handleNameChange} />
+                <NameFilter input={nameFilter} onChange={handleNameChange} />
                 <label>At home?</label>
                 <InStockFilter
                   value={inStockFilter}
@@ -279,7 +280,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
               </thead>
               <tbody>
                 {filteredItems && filteredItems.length > 0 ? (
-                  filteredItems.map((data: any, key) => {
+                  filteredItems.map((data: Item, key) => {
                     return (
                       <tr
                         key={data._id}
