@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 
 interface BestBeforeEditItemFormProps {
@@ -16,23 +16,29 @@ const BestBeforeEditItemForm = ({
   const [datePickerVisible, setDatePickerVisible] = useState(
     initialData.bestBeforeDate ? true : false
   );
-  const [bbDate, setbbDate] = useState<Date>(
-    initialData.bestBeforeDate ?? new Date()
-  );
+  const [bbDate, setbbDate] = useState<Date | null>(initialData.bestBeforeDate);
 
   useEffect(() => {
     setUserInput(initialData);
     setDatePickerVisible(initialData.bestBeforeDate ? true : false);
-    setbbDate(initialData.bestBeforeDate ?? new Date());
+    setbbDate(initialData.bestBeforeDate);
   }, [initialData]);
 
   const handleDatePickerCheckboxChange = () => {
+    if (!datePickerVisible) {
+      setbbDate(new Date());
+      setUserInput((prevFormData) => ({
+        ...prevFormData,
+        bestBeforeDate: new Date(),
+      }));
+    } else {
+      setbbDate(null);
+      setUserInput((prevFormData) => ({
+        ...prevFormData,
+        bestBeforeDate: null,
+      }));
+    }
     setDatePickerVisible(!datePickerVisible);
-    setbbDate(new Date());
-    setUserInput((prevFormData) => ({
-      ...prevFormData,
-      bestBeforeDate: new Date(),
-    }));
   };
 
   const handleDateChange = (date: Date) => {
@@ -69,14 +75,14 @@ const BestBeforeEditItemForm = ({
             placeholder="Enter item name"
           />
         </label>
-        {/* <label>
-        Has due date?
-        <input
-          type="checkbox"
-          checked={datePickerVisible}
-          onChange={handleDatePickerCheckboxChange}
-        />
-      </label> */}
+        <label>
+          Has due date?
+          <input
+            type="checkbox"
+            checked={datePickerVisible}
+            onChange={handleDatePickerCheckboxChange}
+          />
+        </label>
         {datePickerVisible && (
           <label>
             Best before:

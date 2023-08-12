@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 
 import BestBeforeAddItemForm from "../components/BestBeforeAddItemForm";
@@ -19,7 +19,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
   const [initialDataForEdit, setInitialDataForEdit] = useState({
     _id: 0,
     name: "",
-    bestBeforeDate: new Date(),
+    bestBeforeDate: null,
     inStock: false,
     storeDays: 0,
     category: "food",
@@ -47,7 +47,8 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
       console.log("Successfully fetched Data:");
       const listDataWithDates = data.map((item: Item) => ({
         ...item,
-        bestBeforeDate: new Date(item.bestBeforeDate),
+        bestBeforeDate:
+          item.bestBeforeDate !== null ? new Date(item.bestBeforeDate) : null,
       }));
       setListData(...[listDataWithDates]);
       setFilteredItems(...[listDataWithDates]);
@@ -62,7 +63,10 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
       const jsonData = {
         name: newItem.name,
         inStock: newItem.inStock,
-        bestBeforeDate: new Date(newItem.bestBeforeDate),
+        bestBeforeDate:
+          newItem.bestBeforeDate === null
+            ? null
+            : new Date(newItem.bestBeforeDate),
         storeDays: newItem.storeDays,
         category: newItem.category,
       };
@@ -122,6 +126,7 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
     } catch (error) {
       console.error("Error updating data: ", error);
     }
+    console.log(editedItem.bestBeforeDate);
   };
 
   const deleteItem = async (deletedItem: Item) => {
@@ -285,8 +290,11 @@ const BestBefore = ({ initialData }: BestBeforeProps) => {
                       <tr
                         key={data._id}
                         className={
-                          data["bestBeforeDate"] > today &&
-                          data["bestBeforeDate"] != null
+                          data["bestBeforeDate"] === null
+                            ? data["inStock"]
+                              ? ""
+                              : "table-warning"
+                            : data["bestBeforeDate"] > today
                             ? data["inStock"]
                               ? ""
                               : "table-warning"

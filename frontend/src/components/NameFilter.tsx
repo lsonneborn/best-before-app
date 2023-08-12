@@ -1,5 +1,3 @@
-import React from "react";
-
 interface NameFilterProps {
   input: string;
   onChange: (keyword: string) => void;

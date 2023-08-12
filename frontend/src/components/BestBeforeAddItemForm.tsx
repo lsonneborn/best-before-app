@@ -7,24 +7,30 @@ interface BestBeforeAddItemFormProps {
 }
 
 const BestBeforeAddItemForm = ({ addItem }: BestBeforeAddItemFormProps) => {
-  const [userInput, setUserInput] = useState({
+  const [userInput, setUserInput] = useState<Item>({
     _id: 0,
     name: "",
-    bestBeforeDate: new Date(),
+    bestBeforeDate: null,
     storeDays: 0,
     inStock: false,
     category: "food",
   });
   const [datePickerVisible, setDatePickerVisible] = useState(true);
-  const [bbDate, setbbDate] = useState<Date>(new Date());
+  const [bbDate, setbbDate] = useState<Date | undefined>(undefined);
 
   const handleDatePickerCheckboxChange = () => {
+    datePickerVisible ? setbbDate(undefined) : setbbDate(new Date());
     setDatePickerVisible(!datePickerVisible);
   };
 
   const handleDateChange = (date: Date) => {
-    setbbDate(date);
-    setUserInput((prevFormData) => ({ ...prevFormData, bestBeforeDate: date }));
+    if (date) {
+      setbbDate(date);
+      setUserInput((prevFormData) => ({
+        ...prevFormData,
+        bestBeforeDate: date,
+      }));
+    }
   };
 
   const handleChange = (e: any) => {
@@ -59,14 +65,14 @@ const BestBeforeAddItemForm = ({ addItem }: BestBeforeAddItemFormProps) => {
           placeholder="Enter item name"
         />
       </label>
-      {/* <label>
+      <label>
         Has due date?
         <input
           type="checkbox"
           checked={datePickerVisible}
           onChange={handleDatePickerCheckboxChange}
         />
-      </label> */}
+      </label>
       {datePickerVisible && (
         <label>
           Best before:

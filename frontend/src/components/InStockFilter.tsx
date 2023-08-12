@@ -1,5 +1,3 @@
-import React from "react";
-
 interface InStockFilterProps {
   value: boolean | undefined;
   onChange: (inStock: boolean | undefined) => void;
